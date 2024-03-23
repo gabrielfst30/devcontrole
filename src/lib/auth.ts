@@ -7,7 +7,7 @@ import prismaClient from "./prisma";
 
 //configurações de authentication
 export const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prismaClient) as Adapter,
+  adapter: PrismaAdapter(prismaClient) as Adapter, //quando fizer um login pelo google o registro ja será feito automaticamente no prisma 
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -21,6 +21,8 @@ export const authOptions: AuthOptions = {
         name: string,
         email: string;
       };
+
+      console.log(session)
 
       return session;
     },
