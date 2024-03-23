@@ -1,7 +1,22 @@
+"use client";
+
 import Link from "next/link";
-import { FiLogOut, FiUser } from "react-icons/fi";
+import { FiLogOut, FiUser, FiLoader, FiLock } from "react-icons/fi";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export function Header() {
+  const { status, data } = useSession();
+
+  console.log(status);
+
+  async function handleLogin() {
+    await signIn();
+  }
+
+  async function handleLogout() {
+    await signOut();
+  }
+
   return (
     <header className="w-full flex items-center px-2 py-4 bg-white h-20 shadow-sm">
       <div className="w-full flex items-center justify-between max-w-7xl mx-auto">
@@ -12,15 +27,32 @@ export function Header() {
           </h1>
         </Link>
 
-        <div className="flex items-baseline gap-4">
-          <Link href="/dashboard">
-            <FiUser size={26} color="#4b5536" />
-          </Link>
-
+        {/* quando estiver carregando */}
+        {status === "loading" && (
           <button>
-            <FiLogOut size={26} color="#4b5536" />
+            <FiLoader size={26} color="#4b5536" className="animate-spin"/>
           </button>
-        </div>
+        )}
+
+        {/* sem autenticação */}
+        {status === "unauthenticated" && (
+          <button>
+            <FiLock size={26} color="#4b5536" onClick={handleLogin}/>
+          </button>
+        )}
+
+        {/* autenticado*/}
+        {status === "authenticated" && (
+          <div className="flex items-baseline gap-4">
+            <Link href="/dashboard">
+              <FiUser size={26} color="#4b5536" />
+            </Link>
+
+            <button onClick={handleLogout}>
+              <FiLogOut size={26} color="#bf211f" />
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
